@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: user_service
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:33060/homestead
+    username: homestead
+    password: secret
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+    initialization-mode: never
+    platform: mysql
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8073
+
+eureka:
+  instance:
+    hostname: localhost
+    port: 8070
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlD7P37ECba1eKH+Ipd4p
+          wL8n5g7VDivCYaMcPf9j8pXBY0rC2kDmG+d23Tsd+ANwQqeWlo22OXBPbVqruEPM
+          zIgW4tf2qm1S3CUrXfcI1B3ves8yHc692xE4urwkToGpmh42Vo1tsp6uoGYYZZQe
+          y3WsZ5rZEvaIE+qO/W0X3Bj6YMwg5jRqKszdWkiZTrJcYGroLJ0cbOFZyhT+U54k
+          uTro4eG49gg8ilrJq2Qj+ltVJPAz8zFfoQqLx2/jEY9DMiYp7BqdUu77G1SN3wbq
+          2bdpPNGcOmLk4h/0QKfB9t/uV2nWYP0R/7xIeHbRdmzypHtXIuBIDqQg2WDecHhD
+          AQIDAQAB
+          -----END PUBLIC KEY-----
+
+
+logging:
+  level.org.springframework.security: DEBUG
