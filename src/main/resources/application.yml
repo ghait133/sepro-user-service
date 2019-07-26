@@ -3,7 +3,7 @@ spring:
     name: user_service
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhos t:33060/homestead
+    url: jdbc:mysql://localhost:33060/homestead
     username: homestead
     password: secret
     tomcat:
@@ -21,10 +21,9 @@ spring:
       ddl-auto: update
     show-sql: true
   mail:
-    host: smtp.mailtrap.io
-    port: 2525
-    username: 5e8ba28137b38b
-    password: 1b2e918af9f446
+    host: localhost
+    port: 1025
+
 
 server:
   port: 8073

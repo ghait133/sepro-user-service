@@ -98,6 +98,8 @@ public class UserService implements IUserService {
 
     @Override
     public void createVerificationTokenForUser(User user, String token) {
+        final VerificationToken mytoken = new VerificationToken( token, user);
+        tokenRepository.save(mytoken);
 
     }
 
