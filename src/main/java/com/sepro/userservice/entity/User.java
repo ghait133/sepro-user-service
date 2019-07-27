@@ -101,4 +101,9 @@ public class User extends BaseIdEntity implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void setEnabled (Boolean enabled) {
+        this.enabled = true;
+    }
+
 }

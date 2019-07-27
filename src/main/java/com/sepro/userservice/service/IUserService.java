@@ -2,6 +2,7 @@ package com.sepro.userservice.service;
 
 import com.sepro.userservice.dto.UserDto;
 import com.sepro.userservice.entity.User;
+import com.sepro.userservice.entity.VerificationToken;
 import com.sepro.userservice.error.UserAlreadyExistException;
 
 import java.io.UnsupportedEncodingException;
@@ -20,9 +21,9 @@ public interface IUserService {
 
     void createVerificationTokenForUser(User user, String token);
 
-    //VerificationToken getVerificationToken(String VerificationToken);
+    VerificationToken getVerificationToken(String VerificationToken);
 
-    //VerificationToken generateNewVerificationToken(String token);
+    VerificationToken generateNewVerificationToken(String token);
 
     void createPasswordResetTokenForUser(User user, String token);
 

@@ -1,52 +1,45 @@
 package com.sepro.userservice.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.persistence.*;
-
 @Entity
-public class VerificationToken extends BaseIdEntity{
-
+public class PasswordResetToken extends BaseIdEntity {
     private static final int EXPIRATION = 60 * 24;
-
-
 
     private String token;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id", foreignKey = @ForeignKey(name = "FK_VERIFY_USER"))
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     private Date expiryDate;
 
-    public VerificationToken() {
+    public PasswordResetToken() {
         super();
     }
 
-    public VerificationToken(final String token) {
-        super();
-
+    public PasswordResetToken(final String token) {
         this.token = token;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
-    /*public VerificationToken(final String token, final User user) {
+    public PasswordResetToken(final String token, final User user) {
         super();
 
         this.token = token;
         this.user = user;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
-    }*/
-
-    public VerificationToken(String token, User user) {
-        this.token = token;
-        this.user = user;
-        this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
-    /*public Long getId() {
+
+    //
+    public Long getId() {
         return id;
-    }*/
+    }
 
     public String getToken() {
         return token;
@@ -107,7 +100,7 @@ public class VerificationToken extends BaseIdEntity{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VerificationToken other = (VerificationToken) obj;
+        final PasswordResetToken other = (PasswordResetToken) obj;
         if (expiryDate == null) {
             if (other.expiryDate != null) {
                 return false;
@@ -138,5 +131,4 @@ public class VerificationToken extends BaseIdEntity{
         builder.append("Token [String=").append(token).append("]").append("[Expires").append(expiryDate).append("]");
         return builder.toString();
     }
-
 }

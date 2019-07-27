@@ -1,10 +1,12 @@
 package com.sepro.userservice.service;
 
 import com.sepro.userservice.dto.UserDto;
+import com.sepro.userservice.entity.PasswordResetToken;
 import com.sepro.userservice.entity.Role;
 import com.sepro.userservice.entity.User;
 import com.sepro.userservice.entity.VerificationToken;
 import com.sepro.userservice.error.UserAlreadyExistException;
+import com.sepro.userservice.repository.PasswordResetTokenRepository;
 import com.sepro.userservice.repository.RoleRepository;
 import com.sepro.userservice.repository.UserRepository;
 import com.sepro.userservice.repository.VerificationTokenRepository;
@@ -14,9 +16,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -24,6 +24,20 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class UserService implements IUserService {
+
+    @Override
+    public VerificationToken getVerificationToken(String VerificationToken) {
+        return null;
+    }
+
+    @Override
+    public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
+        VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
+        vToken.updateToken(UUID.randomUUID()
+                .toString());
+        vToken = tokenRepository.save(vToken);
+        return vToken;
+    }
 
     @Autowired
     private UserRepository userRepository;
@@ -39,6 +53,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordTokenRepository;
 
     //@Autowired
     //private SessionRegistry sessionRegistry;
@@ -69,6 +86,10 @@ public class UserService implements IUserService {
     }
     @Override
     public User getUser(String verificationToken) {
+        final VerificationToken token = tokenRepository.findByToken(verificationToken);
+        if (token != null) {
+            return token.getUser();
+        }
         return null;
     }
 
@@ -105,12 +126,13 @@ public class UserService implements IUserService {
 
     @Override
     public void createPasswordResetTokenForUser(User user, String token) {
-
+        final PasswordResetToken myToken = new PasswordResetToken(token, user);
+        passwordTokenRepository.save(myToken);
     }
 
     @Override
     public User findUserByEmail(String email) {
-        return null;
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -125,102 +147,15 @@ public class UserService implements IUserService {
 
     @Override
     public void changeUserPassword(User user, String password) {
-
-    }
-
-    @Override
-    public boolean checkIfValidOldPassword(User user, String password) {
-        return false;
-    }
-
-    @Override
-    public String validateVerificationToken(String token) {
-        return null;
-    }
-
-    @Override
-    public String generateQRUrl(User user) throws UnsupportedEncodingException {
-        return null;
-    }
-
-    @Override
-    public User updateUser2FA(boolean use2FA) {
-        return null;
-    }
-
-    @Override
-    public List<String> getUsersFromSessionRegistry() {
-        return null;
-    }
-
-    /*@Override
-    public void deleteUser(final User user) {
-        final VerificationToken verificationToken = tokenRepository.findByUser(user);
-
-        if (verificationToken != null) {
-            tokenRepository.delete(verificationToken);
-        }
-
-        final PasswordResetToken passwordToken = passwordTokenRepository.findByUser(user);
-
-        if (passwordToken != null) {
-            passwordTokenRepository.delete(passwordToken);
-        }
-
-        userRepository.delete(user);
-    }
-
-    @Override
-    public void createVerificationTokenForUser(final User user, final String token) {
-        final VerificationToken myToken = new VerificationToken(token, user);
-        tokenRepository.save(myToken);
-    }
-
-    @Override
-    public VerificationToken generateNewVerificationToken(final String existingVerificationToken) {
-        VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
-        vToken.updateToken(UUID.randomUUID()
-                .toString());
-        vToken = tokenRepository.save(vToken);
-        return vToken;
-    }
-
-    @Override
-    public void createPasswordResetTokenForUser(final User user, final String token) {
-        final PasswordResetToken myToken = new PasswordResetToken(token, user);
-        passwordTokenRepository.save(myToken);
-    }
-
-    @Override
-    public User findUserByEmail(final String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public PasswordResetToken getPasswordResetToken(final String token) {
-        return passwordTokenRepository.findByToken(token);
-    }
-
-    @Override
-    public User getUserByPasswordResetToken(final String token) {
-        return passwordTokenRepository.findByToken(token)
-                .getUser();
-    }
-
-    @Override
-    public Optional<User> getUserByID(final long id) {
-        return userRepository.findById(id);
-    }
-
-    @Override
-    public void changeUserPassword(final User user, final String password) {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
     }
 
     @Override
-    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+    public boolean checkIfValidOldPassword(User user, String oldPassword) {
+
         return passwordEncoder.matches(oldPassword, user.getPassword());
+
     }
 
     @Override
@@ -248,41 +183,18 @@ public class UserService implements IUserService {
 
     @Override
     public String generateQRUrl(User user) throws UnsupportedEncodingException {
-        return QR_PREFIX + URLEncoder.encode(String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s", APP_NAME, user.getEmail(), user.getSecret(), APP_NAME), "UTF-8");
+        return null;
     }
 
     @Override
     public User updateUser2FA(boolean use2FA) {
-        final Authentication curAuth = SecurityContextHolder.getContext()
-                .getAuthentication();
-        User currentUser = (User) curAuth.getPrincipal();
-        currentUser.setUsing2FA(use2FA);
-        currentUser = userRepository.save(currentUser);
-        final Authentication auth = new UsernamePasswordAuthenticationToken(currentUser, currentUser.getPassword(), curAuth.getAuthorities());
-        SecurityContextHolder.getContext()
-                .setAuthentication(auth);
-        return currentUser;
-    }
-
-    private boolean emailExists(final String email) {
-        return userRepository.findByEmail(email) != null;
+        return null;
     }
 
     @Override
     public List<String> getUsersFromSessionRegistry() {
-        return sessionRegistry.getAllPrincipals()
-                .stream()
-                .filter((u) -> !sessionRegistry.getAllSessions(u, false)
-                        .isEmpty())
-                .map(o -> {
-                    if (o instanceof User) {
-                        return ((User) o).getEmail();
-                    } else {
-                        return o.toString();
-                    }
-                })
-                .collect(Collectors.toList());
+        return null;
+    }
 
-    }*/
 
 }
