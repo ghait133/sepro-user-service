@@ -1,9 +1,9 @@
 spring:
   application:
-    name: user_service
+    name: user-service
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:33060/homestead
+    url: jdbc:mysql://localhost:3306/homestead
     username: homestead
     password: secret
     tomcat:

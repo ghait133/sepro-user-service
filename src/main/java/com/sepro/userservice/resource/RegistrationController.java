@@ -79,7 +79,7 @@ public class RegistrationController {
         return "error";
     }
     //Resend Registrationtoken
-    @RequestMapping(value = "/user/resendRegistrationToken", method = RequestMethod.GET)
+    @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
     @ResponseBody
     public GenericResponse resendRegistrationToken(final HttpServletRequest request, @RequestParam("token") final String existingToken) {
         final VerificationToken newToken = userService.generateNewVerificationToken(existingToken); //<<---- we have to put the right link in a Button in the UI
@@ -89,7 +89,7 @@ public class RegistrationController {
     }
 
     // Reset password
-    @RequestMapping(value = "/user/resetPassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
     @ResponseBody
     public GenericResponse resetPassword(final HttpServletRequest request, @RequestParam("email") final String userEmail) {
         final User user = userService.findUserByEmail(userEmail);
@@ -101,7 +101,7 @@ public class RegistrationController {
         return new GenericResponse("Reset Password");
     }
 
-    @RequestMapping(value = "/user/changePassword", method = RequestMethod.GET)
+    @RequestMapping(value = "/changePassword", method = RequestMethod.GET)
     public String showChangePasswordPage(@RequestParam("id") final long id, @RequestParam("token") final String token) {
         final String result = securityUserService.validatePasswordResetToken(id, token);
         if (result != null) {
@@ -111,7 +111,7 @@ public class RegistrationController {
         return "redirect to update password form";
     }
 
-    @RequestMapping(value = "/user/savePassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/savePassword", method = RequestMethod.POST)
     @ResponseBody
     public GenericResponse savePassword(@Valid @RequestBody PasswordDto passwordDto, @RequestParam final String token, @RequestParam final long id) {
         final String result = securityUserService.validatePasswordResetToken(id, token);
@@ -125,7 +125,7 @@ public class RegistrationController {
     }
 
     // change user password
-    @RequestMapping(value = "/user/updatePassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @PreAuthorize("hasAnyAuthority('role_partner','role_customer')")
     public GenericResponse changeUserPassword(@Valid @RequestBody PasswordDto passwordDto) {
